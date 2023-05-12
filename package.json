@@ -1,0 +1,29 @@
+{
+  "name": "vscode-markdown-language-client",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/markdown-it": "^12.2.3",
+    "@types/node": "^20.1.2",
+    "@types/vscode": "^1.78.0",
+    "typescript": "^5.0.4",
+    "vscode-languageserver-types": "^3.17.3"
+  },
+  "dependencies": {
+    "markdown-it": "^13.0.1",
+    "vscode-languageclient": "^8.1.0",
+    "vscode-languageserver-textdocument": "^1.0.8",
+    "vscode-markdown-languageservice": "^0.3.0",
+    "vscode-uri": "^3.0.7"
+  }
+}
