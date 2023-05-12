@@ -42,30 +42,3 @@ export function looksLikeMarkdownPath(resolvedHrefPath: vscode.Uri): boolean {
 
 	return markdownFileExtensions.includes(URI.Utils.extname(resolvedHrefPath).toLowerCase().replace('.', ''));
 }
-
-
-declare global {
-	interface String {
-		lineCount(): number;
-	}
-}
-
-String.prototype.lineCount = function () {
-  let count = 1;
-
-  let chr;
-  let i = 0, end = this.length;
-  for (; i < end; ++i) {
-    if (this[i] == '\n' || this[i] == '\r') {
-      count = 2;
-      chr = this[i];
-      break;
-    }
-  }
-  for (++i; i < end; ++i) {
-    if (this[i] == chr) {
-      ++count;
-    }
-  }
-  return count;
-}
