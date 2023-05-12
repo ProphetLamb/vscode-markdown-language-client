@@ -21,47 +21,42 @@ const baseUrl = "https://raw.githubusercontent.com/microsoft/vscode/main/"
 const transformers: { [key: string]: TransformDescriptor } = {
 	"tsconfig.base.json" : new TransformDescriptor("extensions/tsconfig.base.json"),
 	"src/launcher.ts" : new TransformDescriptor("extensions/markdown-language-features/src/extension.ts", [
-		// replace: import { IMdParser, MarkdownItEngine } from './markdownEngine';
-		// with: 		import { IMdParser } from 'vscode-markdown-languageservice';
-		{ regex: /import { IMdParser, MarkdownItEngine } from '\.\/markdownEngine';/g, replace: "import { IMdParser } from 'vscode-markdown-languageservice';" },
 		// remove line: import { activateShared } from './extension.shared';
-		{ regex: /import { activateShared } from '\.\/extension\.shared';\n/g, replace: "" },
+		{ regex: /import { .* } from '\.\/extension\.shared';\n/g, replace: "" },
 		// remove line: import { VsCodeOutputLogger } from './logging';
-		{ regex: /import { VsCodeOutputLogger } from '\.\/logging';\n/g, replace: "" },
+		{ regex: /import { .* } from '\.\/logging';\n/g, replace: "" },
 		// remove line: import { getMarkdownExtensionContributions } from './markdownExtensions';
-		{ regex: /import { getMarkdownExtensionContributions } from '\.\/markdownExtensions';\n/g, replace: "" },
+		{ regex: /import { .* } from '\.\/markdownExtensions';\n/g, replace: "" },
 		// remove line: import { githubSlugifier } from './slugify';
-		{ regex: /import { githubSlugifier } from '\.\/slugify';\n/g, replace: "" },
-		// replace: function startServer(context: vscode.ExtensionContext, parser: IMdParser): Promise<MdLanguageClient> {
-		// with:		export function startServer(context: vscode.ExtensionContext, parser: IMdParser): Promise<MdLanguageClient> {
-		{ regex: /function startServer\(context: vscode\.ExtensionContext, parser: IMdParser\): Promise<MdLanguageClient> {/g, replace: "export function startServer(context: vscode.ExtensionContext, parser: IMdParser): Promise<MdLanguageClient> {" },
+		{ regex: /import { .* } from '\.\/slugify';\n/g, replace: "" },
+		// replace:	import { IMdParser, MarkdownItEngine } from './markdownEngine';
+		// with:		import { IMdParser } from './markdownEngine';
+		{ regex: /import { IMdParser, MarkdownItEngine } from '\.\/markdownEngine';\n/g, replace: "import { IMdParser } from './markdownEngine';" },
+		// replace: function startServer(
+		// with:		export function startServer(
+		{ regex: /function startServer\(/g, replace: "export function startServer(" },
 		// remove function: export async function activate(context: vscode.ExtensionContext) { ... }
 		{ regex: /export async function activate\(context: vscode\.ExtensionContext\)\s*/gm, replace: "", removeBodyAfterMatch: true },
 	]),
-	"src/client/client.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/client.ts", [
-		// replace: import { IMdParser } from '../markdownEngine';
-		// with: 		import { IMdParser } from 'vscode-markdown-languageservice';
-		//					import { MdLsTextDocumentProxy } from '../types/textDocument';
-		{ regex: /import { IMdParser } from '\.\.\/markdownEngine';/g, replace: new URL("sync/client_imports", "file://") },
-		// replace:	return parser.tokenize(doc);
-		// with:		return parser.tokenize(new MdLsTextDocumentProxy(doc));
-		{ regex: /return parser\.tokenize\(doc\);/g, replace: "return parser.tokenize(new MdLsTextDocumentProxy(doc));" },
+	"src/logging.ts": new TransformDescriptor("extensions/markdown-language-features/src/logging.ts"),
+	"src/markdownEngine.ts" : new TransformDescriptor("extensions/markdown-language-features/src/markdownEngine.ts", [
+		// replace: await import('markdown-it')
+		// with: 		(await import('markdown-it')).default
+		{ regex: /await import\('markdown-it'\)/g, replace: "(await import('markdown-it')).default" },
 	]),
+	"src/markdownExtensions.ts": new TransformDescriptor("extensions/markdown-language-features/src/markdownExtensions.ts"),
+	"src/slugify.ts": new TransformDescriptor("extensions/markdown-language-features/src/slugify.ts"),
 	"src/client/fileWatchingManager.ts": new TransformDescriptor("extensions/markdown-language-features/src/client/fileWatchingManager.ts"),
-	"src/client//inMemoryDocument.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/inMemoryDocument.ts"),
+	"src/client/inMemoryDocument.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/inMemoryDocument.ts"),
 	"src/client/protocol.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/protocol.ts"),
 	"src/client/workspace.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/workspace.ts"),
-	"src/types/textDocument.ts" : new TransformDescriptor("extensions/markdown-language-features/src/types/textDocument.ts", [
-		// replace: import * as vscode from 'vscode';
-		// with:		file://./sync/textDocument_imports
-		{ regex: /import \* as vscode from 'vscode';/g, replace: new URL("sync/textDocument_imports", "file://") },
-	], [
-		// append: export class MdLsTextDocumentProxy implements vscode.TextDocument {
-		new URL("sync/textDocument_MdLsTextDocumentProxy", "file://"),
-	]),
+	"src/types/textDocument.ts" : new TransformDescriptor("extensions/markdown-language-features/src/types/textDocument.ts"),
+	"src/typings/ref.d.ts": new TransformDescriptor("extensions/markdown-language-features/src/typings/ref.d.ts"),
+	"src/util/arrays.ts" : new TransformDescriptor("extensions/markdown-language-features/src/util/arrays.ts"),
 	"src/util/dispose.ts" : new TransformDescriptor("extensions/markdown-language-features/src/util/dispose.ts"),
 	"src/util/file.ts" : new TransformDescriptor("extensions/markdown-language-features/src/util/file.ts"),
 	"src/util/resourceMap.ts" : new TransformDescriptor("extensions/markdown-language-features/src/util/resourceMap.ts"),
+	"src/util/resources.ts" : new TransformDescriptor("extensions/markdown-language-features/src/util/resources.ts"),
 	"src/util/schemes.ts" : new TransformDescriptor("extensions/markdown-language-features/src/util/schemes.ts")
 }
 
@@ -83,27 +78,15 @@ function readFile(pathOrUrl: fs.PathLike): Promise<Buffer> {
 		});
 	}
 
-	function readFileSystem(path: fs.PathLike): Promise<Buffer> {
-		return new Promise((resolve, reject) => {
-			fs.readFile(path, (err, data) => {
-				if (err) {
-					reject(err);
-					return;
-				}
-				resolve(data);
-			});
-		});
-	}
-
 	if (pathOrUrl instanceof URL) {
 		if (pathOrUrl.protocol === "file:") {
 			// assume relative url
-			return readFileSystem(`.${pathOrUrl.pathname}`);
+			return fs.promises.readFile(`.${pathOrUrl.pathname}`);
 		}
 		return downloadFile(pathOrUrl);
 	}
 
-	return readFileSystem(pathOrUrl);
+	return fs.promises.readFile(pathOrUrl);
 }
 
 async function applyTransform(file: Buffer, transform: TransformDescriptor): Promise<string> {
@@ -172,24 +155,15 @@ async function applyTransform(file: Buffer, transform: TransformDescriptor): Pro
 	return result;
 }
 
-function writeFile(path: fs.PathLike, data: string): Promise<void> {
-	return new Promise((resolve, reject) => {
-		fs.writeFile(path, data, (err) => {
-			if (err) {
-				reject(err);
-			}
-			resolve();
-		});
-	});
-}
-
 async function updateFile(localFile: fs.PathLike, transform: TransformDescriptor, bar: ProgressBar): Promise<void> {
 	try {
 		const buffer = await readFile(new URL(transform.remotePath, baseUrl));
 		bar.tick();
 		const patched = await applyTransform(buffer, transform);
 		bar.tick();
-		await writeFile(localFile, patched);
+		const parent = path.dirname(localFile.toString());
+		await fs.promises.mkdir(parent, { recursive: true });
+		await fs.promises.writeFile(localFile, patched);
 		bar.tick();
 	} catch (err) {
 		bar.interrupt(`Failed to update ${localFile}`);

@@ -5,13 +5,9 @@
 
 import * as vscode from 'vscode';
 
-/**
- * Minimal version of {@link vscode.TextDocument}.
- */
-export interface ITextDocument {
-	readonly uri: vscode.Uri;
-	readonly version: number;
+export interface WebviewResourceProvider {
+	asWebviewUri(resource: vscode.Uri): vscode.Uri;
 
-	getText(): string;
+	readonly cspSource: string;
 }
 

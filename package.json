@@ -29,6 +29,7 @@
     "vscode-languageserver-types": "^3.17.3"
   },
   "dependencies": {
+    "highlight.js": "^11.8.0",
     "markdown-it": "^13.0.1",
     "vscode-languageclient": "^8.1.0",
     "vscode-languageserver": "^8.1.0",

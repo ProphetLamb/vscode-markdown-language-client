@@ -5,8 +5,7 @@
 
 import * as vscode from 'vscode';
 import { BaseLanguageClient, LanguageClientOptions, NotebookDocumentSyncRegistrationType } from 'vscode-languageclient';
-import { IMdParser } from 'vscode-markdown-languageservice';
-import { MdLsTextDocumentProxy } from '../types/textDocument';
+import { IMdParser } from '../markdownEngine';
 import * as proto from './protocol';
 import { looksLikeMarkdownPath, markdownFileExtensions } from '../util/file';
 import { VsCodeMdWorkspace } from './workspace';
@@ -87,7 +86,7 @@ export async function startClient(factory: LanguageClientConstructor, parser: IM
 		const uri = vscode.Uri.parse(e.uri);
 		const doc = await workspace.getOrLoadMarkdownDocument(uri);
 		if (doc) {
-			return parser.tokenize(new MdLsTextDocumentProxy(doc));
+			return parser.tokenize(doc);
 		} else {
 			return [];
 		}

@@ -5,6 +5,7 @@ specifiers:
   '@types/node': ^20.1.2
   '@types/progress': ^2.0.5
   '@types/vscode': ^1.78.0
+  highlight.js: ^11.8.0
   markdown-it: ^13.0.1
   progress: ^2.0.3
   ts-node: ^10.9.1
@@ -16,6 +17,7 @@ specifiers:
   vscode-uri: ^3.0.7
 
 dependencies:
+  highlight.js: 11.8.0
   markdown-it: 13.0.1
   vscode-languageclient: 8.1.0
   vscode-languageserver: 8.1.0
@@ -203,6 +205,11 @@ packages:
   /he/1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+    dev: false
+
+  /highlight.js/11.8.0:
+    resolution: {integrity: sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==}
+    engines: {node: '>=12.0.0'}
     dev: false
 
   /linkify-it/4.0.1:
