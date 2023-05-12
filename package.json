@@ -1,7 +1,7 @@
 {
   "name": "vscode-markdown-language-client",
   "version": "0.4.0-alpha.1",
-  "description": "",
+  "description": "Export of base functionality to connect to the markdown language server",
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -10,8 +10,13 @@
     "test": "node ./out/test/runTest.js",
     "sync": "npx ts-node ./sync.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "vscode",
+    "markdown",
+    "language",
+    "client"
+  ],
+  "author": "ProphetLamb",
   "license": "MIT",
   "devDependencies": {
     "@types/markdown-it": "^12.2.3",
