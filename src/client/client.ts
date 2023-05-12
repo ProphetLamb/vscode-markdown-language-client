@@ -6,12 +6,12 @@
 import * as vscode from 'vscode';
 import { BaseLanguageClient, LanguageClientOptions, NotebookDocumentSyncRegistrationType } from 'vscode-languageclient';
 import { IMdParser } from 'vscode-markdown-languageservice';
+import { MdLsTextDocumentProxy } from '../types/textDocument';
 import * as proto from './protocol';
 import { looksLikeMarkdownPath, markdownFileExtensions } from '../util/file';
 import { VsCodeMdWorkspace } from './workspace';
 import { FileWatcherManager } from './fileWatchingManager';
 import { IDisposable } from '../util/dispose';
-import { MdLsTextDocumentProxy } from '../types/textDocument';
 
 
 export type LanguageClientConstructor = (name: string, description: string, clientOptions: LanguageClientOptions) => BaseLanguageClient;

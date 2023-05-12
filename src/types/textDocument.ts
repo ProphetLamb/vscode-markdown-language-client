@@ -8,6 +8,7 @@ import { Range, Position } from 'vscode-languageserver-types';
 import * as mdls from 'vscode-markdown-languageservice';
 import { URI } from 'vscode-uri';
 
+
 /**
  * Minimal version of {@link vscode.TextDocument}.
  */

@@ -8,6 +8,8 @@ import { LanguageClient, ServerOptions, TransportKind } from 'vscode-languagecli
 import { MdLanguageClient, startClient } from './client/client';
 import { IMdParser } from 'vscode-markdown-languageservice';
 
+
+
 export function startServer(context: vscode.ExtensionContext, parser: IMdParser): Promise<MdLanguageClient> {
 	const clientMain = vscode.extensions.getExtension('vscode.markdown-language-features')?.packageJSON?.main || '';
 
