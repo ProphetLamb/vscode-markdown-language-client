@@ -8,8 +8,7 @@ import type Token = require('markdown-it/lib/token');
 import * as vscode from 'vscode';
 import { ILogger } from './logging';
 import { MarkdownContributionProvider } from './markdownExtensions';
-import { Slugifier } from './slugify';
-import { ITextDocument } from './types/textDocument';
+import { ISlugifier } from 'vscode-markdown-languageservice';import { ITextDocument } from './types/textDocument';
 import { WebviewResourceProvider } from './util/resources';
 import { isOfScheme, Schemes } from './util/schemes';
 
@@ -90,7 +89,7 @@ interface RenderEnv {
 }
 
 export interface IMdParser {
-	readonly slugifier: Slugifier;
+	readonly slugifier: ISlugifier;
 
 	tokenize(document: ITextDocument): Promise<Token[]>;
 }
@@ -102,11 +101,11 @@ export class MarkdownItEngine implements IMdParser {
 	private _slugCount = new Map<string, number>();
 	private _tokenCache = new TokenCache();
 
-	public readonly slugifier: Slugifier;
+	public readonly slugifier: ISlugifier;
 
 	public constructor(
 		private readonly _contributionProvider: MarkdownContributionProvider,
-		slugifier: Slugifier,
+		slugifier: ISlugifier,
 		private readonly _logger: ILogger,
 	) {
 		this.slugifier = slugifier;

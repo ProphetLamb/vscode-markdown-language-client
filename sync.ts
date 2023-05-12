@@ -40,12 +40,17 @@ const transformers: { [key: string]: TransformDescriptor } = {
 	]),
 	"src/logging.ts": new TransformDescriptor("extensions/markdown-language-features/src/logging.ts"),
 	"src/markdownEngine.ts" : new TransformDescriptor("extensions/markdown-language-features/src/markdownEngine.ts", [
+		// replace: import { Slugifier } from './slugify';
+		// with:		import { ISlugifier } from 'vscode-markdown-languageservice';
+		{ regex: /import { Slugifier } from '\.\/slugify';\n/g, replace: "import { ISlugifier } from 'vscode-markdown-languageservice';" },
+		// replace: : Slugifier [;,]
+		// with:		: ISlugifier [;,]
+		{ regex: /: Slugifier(\s*[;,])/g, replace: ": ISlugifier$1" },
 		// replace: await import('markdown-it')
 		// with: 		(await import('markdown-it')).default
 		{ regex: /await import\('markdown-it'\)/g, replace: "(await import('markdown-it')).default" },
 	]),
 	"src/markdownExtensions.ts": new TransformDescriptor("extensions/markdown-language-features/src/markdownExtensions.ts"),
-	"src/slugify.ts": new TransformDescriptor("extensions/markdown-language-features/src/slugify.ts"),
 	"src/client/fileWatchingManager.ts": new TransformDescriptor("extensions/markdown-language-features/src/client/fileWatchingManager.ts"),
 	"src/client/inMemoryDocument.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/inMemoryDocument.ts"),
 	"src/client/protocol.ts" : new TransformDescriptor("extensions/markdown-language-features/src/client/protocol.ts"),
