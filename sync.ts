@@ -18,7 +18,7 @@ class TransformDescriptor {
 }
 
 const baseUrl = "https://raw.githubusercontent.com/microsoft/vscode/main/"
-const fileMappings: { [key: string]: TransformDescriptor } = {
+const transformers: { [key: string]: TransformDescriptor } = {
 	"tsconfig.base.json" : new TransformDescriptor("extensions/tsconfig.base.json"),
 	"src/launcher.ts" : new TransformDescriptor("extensions/markdown-language-features/src/extension.ts", [
 		// replace: import { IMdParser, MarkdownItEngine } from './markdownEngine';
@@ -42,7 +42,7 @@ const fileMappings: { [key: string]: TransformDescriptor } = {
 		// replace: import { IMdParser } from '../markdownEngine';
 		// with: 		import { IMdParser } from 'vscode-markdown-languageservice';
 		//					import { MdLsTextDocumentProxy } from '../types/textDocument';
-		{ regex: /import { IMdParser } from '\.\.\/markdownEngine';/g, replace: "import { IMdParser } from 'vscode-markdown-languageservice';\nimport { MdLsTextDocumentProxy } from '../types/textDocument';" },
+		{ regex: /import { IMdParser } from '\.\.\/markdownEngine';/g, replace: new URL("sync/client_imports", "file://") },
 		// replace:	return parser.tokenize(doc);
 		// with:		return parser.tokenize(new MdLsTextDocumentProxy(doc));
 		{ regex: /return parser\.tokenize\(doc\);/g, replace: "return parser.tokenize(new MdLsTextDocumentProxy(doc));" },
@@ -199,7 +199,7 @@ async function updateFile(localFile: fs.PathLike, transform: TransformDescriptor
 
 const maxFileNameLength: number = function(){
 	let max = 0;
-	for (const file in fileMappings) {
+	for (const file in transformers) {
 		max = Math.max(max, file.length);
 	}
 	return max;
@@ -220,11 +220,11 @@ function mainBar(file: string): ProgressBar {
 export async function main() {
 	let operations: Promise<void>[] = [];
 	let bars: ProgressBar[] = [];
-	for (const localFile in fileMappings) {
+	for (const localFile in transformers) {
 		let bar = mainBar(localFile);
 		bars.push(bar);
 
-		const patch = fileMappings[localFile];
+		const patch = transformers[localFile];
 		const localPath = path.join(__dirname, localFile);
 		operations.push(updateFile(localPath, patch, bar));
 	}

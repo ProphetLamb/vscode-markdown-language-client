@@ -1,0 +1,2 @@
+import { IMdParser } from 'vscode-markdown-languageservice';
+import { MdLsTextDocumentProxy } from '../types/textDocument';
